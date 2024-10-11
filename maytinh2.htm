@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 10px;
+            width: 350px;
+            margin: 50px auto;
+        }
+        .calculator input {
+            grid-column: span 4;
+            height: 50px;
+            font-size: 2em;
+            text-align: right;
+        }
+        .calculator button {
+            height: 50px;
+            font-size: 1.5em;
+        }
+        .wide {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="toggleSign()">+/-</button>
+        <button onclick="square()">x²</button>
+        <button onclick="sqrt()">√</button>
+
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button onclick="operate('/')">/</button>
+
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button onclick="operate('*')">x</button>
+
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button onclick="operate('-')">-</button>
+
+        <button onclick="appendNumber('0')" class="wide">0</button>
+        <button onclick="appendDot()">.</button>
+        <button onclick="operate('+')">+</button>
+
+        <button onclick="addToMemory()">M+</button>
+        <button onclick="subtractFromMemory()">M-</button>
+        <button onclick="recallMemory()">RM</button>
+        <button onclick="calculate()">=</button>
+    </div>
+
+    <script>
+        let displayValue = '';
+        let memoryValue = 0;
+        let operator = '';
+        let firstOperand = null;
+
+        function clearDisplay() {
+            displayValue = '';
+            operator = '';
+            firstOperand = null;
+            document.getElementById('display').value = '';
+        }
+
+        function appendNumber(number) {
+            displayValue += number;
+            document.getElementById('display').value = displayValue;
+        }
+
+        function appendDot() {
+            if (!displayValue.includes('.')) {
+                displayValue += '.';
+                document.getElementById('display').value = displayValue;
+            }
+        }
+
+        function toggleSign() {
+            if (displayValue) {
+                displayValue = (parseFloat(displayValue) * -1).toString();
+                document.getElementById('display').value = displayValue;
+            }
+        }
+
+        function square() {
+            if (displayValue) {
+                displayValue = (parseFloat(displayValue) ** 2).toString();
+                document.getElementById('display').value = displayValue;
+            }
+        }
+
+        function sqrt() {
+            if (displayValue) {
+                displayValue = (Math.sqrt(parseFloat(displayValue))).toString();
+                document.getElementById('display').value = displayValue;
+            }
+        }
+
+        function operate(op) {
+            if (displayValue) {
+                firstOperand = parseFloat(displayValue);
+                operator = op;
+                displayValue = '';
+            }
+        }
+
+        function calculate() {
+            if (firstOperand !== null && displayValue && operator) {
+                let secondOperand = parseFloat(displayValue);
+                switch (operator) {
+                    case '+':
+                        displayValue = (firstOperand + secondOperand).toString();
+                        break;
+                    case '-':
+                        displayValue = (firstOperand - secondOperand).toString();
+                        break;
+                    case '*':
+                        displayValue = (firstOperand * secondOperand).toString();
+                        break;
+                    case '/':
+                        if (secondOperand !== 0) {
+                            displayValue = (firstOperand / secondOperand).toString();
+                        } else {
+                            alert("Cannot divide by zero");
+                            displayValue = '';
+                        }
+                        break;
+                }
+                document.getElementById('display').value = displayValue;
+                firstOperand = null;
+                operator = '';
+            }
+        }
+
+        function addToMemory() {
+            memoryValue += parseFloat(displayValue);
+            clearDisplay();
+        }
+
+        function subtractFromMemory() {
+            memoryValue -= parseFloat(displayValue);
+            clearDisplay();
+        }
+
+        function recallMemory() {
+            displayValue = memoryValue.toString();
+            document.getElementById('display').value = displayValue;
+        }
+    </script>
+
+</body>
+</html>
